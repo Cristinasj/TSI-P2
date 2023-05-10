@@ -3,7 +3,7 @@
 include "globals.mzn"; 
 set of int: HORAS = 8..13;
 % Hora a la que se imparte el recreo
-int: recreo = 11; 
+int: tutorias = 11; 
 set of int: DIAS = 1..5; 
 % La asignatura 10 es el recreo
 % Las asignaturas de 11 a 15 son la segunda parte de las asignaturas 1, 3, 4, 5, y 8 respectivamente 
@@ -16,28 +16,14 @@ array [ASIGNATURAS] of 1..5: horasTotales = [2, 2, 2, 2, 2, 2, 2, 1, 1, 5, 2, 2,
 array[DIAS,HORAS] of var ASIGNATURAS: horario;
 
 % En cada día de la semana solo se puede impartir, como máximo, un bloque de cada asignatura 
-constraint all_different([ horario[1,i] | i in HORAS]); % Lunes 
-constraint all_different([ horario[2,i] | i in HORAS]); % Martes
-constraint all_different([ horario[3,i] | i in HORAS]); % Miércoles 
-constraint all_different([ horario[4,i] | i in HORAS]); % Jueves 
-constraint all_different([ horario[5,i] | i in HORAS]); % Viernes 
+constraint forall(j in 1..5)(
+          all_different([horario[j, i] | i in HORAS])
+ ); 
 
 % De cada asignatura se tienen que impartir las horas establecidas
-constraint count(horario, 1) == horasTotales[1]; 
-constraint count(horario, 2) == horasTotales[2];
-constraint count(horario, 3) == horasTotales[3];
-constraint count(horario, 4) == horasTotales[4];
-constraint count(horario, 5) == horasTotales[5];
-constraint count(horario, 6) == horasTotales[6];
-constraint count(horario, 7) == horasTotales[7];
-constraint count(horario, 8) == horasTotales[8];
-constraint count(horario, 9) == horasTotales[9];
-constraint count(horario, 10) == horasTotales[10];
-constraint count(horario, 11) == horasTotales[11];
-constraint count(horario, 12) == horasTotales[12];
-constraint count(horario, 13) == horasTotales[13];
-constraint count(horario, 14) == horasTotales[14];
-constraint count(horario, 15) == horasTotales[15];
+constraint forall(i in 1..15)(
+  count(horario, i) == horasTotales[i]
+);
 
 % Hay asignaturas que tienen que impartirse en bloques consecutivos 
 % La primera hora de las asignaturas dobles no pueden impartirse a ultima hora 
@@ -90,11 +76,9 @@ constraint forall(i,j in HORAS)(horario[5,i] == 6 -> horario[5,j] != 9);
 constraint forall(i,j in HORAS)(horario[5,i] == 9 -> horario[5,j] != 5);
 
 % La cuarta franja horaria debe reservarse para el recreo, es decir, no asignar ninguna asignatura
-constraint horario[1,recreo] == 10;  
-constraint horario[2,recreo] == 10;
-constraint horario[3,recreo] == 10;
-constraint horario[4,recreo] == 10;
-constraint horario[5,recreo] == 10;
+constraint forall(i in DIAS)(
+  horario[i, tutorias] == 10
+); 
 
 % Restricciones horarias de los profesores 
 % Las asignaturas A1 y A3 tienen que empezar a darse a las 12 
@@ -106,8 +90,8 @@ constraint horario[1,8] == 4 \/ horario[2,8] == 4 \/ horario[3,8] == 4 \/ horari
 constraint horario[1,8] == 5 \/ horario[2,8] == 5 \/ horario[3,8] == 5 \/ horario[4,8] == 5 \/ horario[5,8] == 5;
 
 % Las asignaturas A6 y A9 tienen que darse antes del recreo
-constraint horario[1,recreo-1] == 6 \/ horario[2,recreo-1] == 6 \/ horario[3,recreo-1] == 6 \/ horario[4,recreo-1] == 6 \/ horario[5,recreo-1] == 6; 
-constraint horario[1,recreo-1] == 9 \/ horario[2,recreo-1] == 9 \/ horario[3,recreo-1] == 9 \/ horario[4,recreo-1] == 9 \/ horario[5,recreo-1] == 9; 
+constraint horario[1,tutorias-1] == 6 \/ horario[2,tutorias-1] == 6 \/ horario[3,tutorias-1] == 6 \/ horario[4,tutorias-1] == 6 \/ horario[5,tutorias-1] == 6; 
+constraint horario[1,tutorias-1] == 9 \/ horario[2,tutorias-1] == 9 \/ horario[3,tutorias-1] == 9 \/ horario[4,tutorias-1] == 9 \/ horario[5,tutorias-1] == 9; 
 
 % Restricciones de días de las asingaturas 
 % Asignatura 1 no puede ser impartida el miercoles, jueves ni viernes
@@ -154,4 +138,4 @@ constraint forall(i in HORAS)(horario[5,i] != 9);
 
 solve satisfy;
 
-%output ["    L  M  X  J  V\n8h  \(horario[1,8])  \(horario[2,8])  \(horario[3,8])  \(horario[4,8])  \(horario[5,8])\n9h  \(horario[1,9])  \(horario[2,9])  \(horario[3,9])  \(horario[4,9])  \(horario[5,9])\n10h  \(horario[1,10])  \(horario[2,10])  \(horario[3,10])  \(horario[4,10])  \(horario[5,10])\n11h  \(horario[1,11])  \(horario[2,11])  \(horario[3,11])  \(horario[4,11])  \(horario[5,11])\n12h  \(horario[1,12])  \(horario[2,12])  \(horario[3,12])  \(horario[4,12])  \(horario[5,12])\n13h  \(horario[1,13])  \(horario[2,13])  \(horario[3,13])  \(horario[4,13])  \(horario[5,13])\n"];  
+output ["    L  M  X  J  V\n8h  \(horario[1,8])  \(horario[2,8])  \(horario[3,8])  \(horario[4,8])  \(horario[5,8])\n9h  \(horario[1,9])  \(horario[2,9])  \(horario[3,9])  \(horario[4,9])  \(horario[5,9])\n10h  \(horario[1,10])  \(horario[2,10])  \(horario[3,10])  \(horario[4,10])  \(horario[5,10])\n11h  \(horario[1,11])  \(horario[2,11])  \(horario[3,11])  \(horario[4,11])  \(horario[5,11])\n12h  \(horario[1,12])  \(horario[2,12])  \(horario[3,12])  \(horario[4,12])  \(horario[5,12])\n13h  \(horario[1,13])  \(horario[2,13])  \(horario[3,13])  \(horario[4,13])  \(horario[5,13])\n"];  

@@ -1,7 +1,7 @@
 include "globals.mzn";
 
 % Conjuntos 
-set of int: S = {1,1,2};
+array [POS] of int: S = [1,1,2];
 set of int: POS = 1..3; 
 %set of int: S = {1,2,3,4,5,6};
 %set of int: POS = 1..6; 
@@ -15,11 +15,10 @@ set of int: POS = 1..3;
 %set of int: POS = 1..20; 
 
 % Representación de la solución
-array [POS] of var 0..1: S1;
-array [POS] of var 0..1: S2;
+array [POS] of var 0..1: subsets;
 var int: resta; 
 
-%constraint resta == sum(i in POS)(S[i]*subsets[i]) - sum(i in POS)((1-S[i])*subsets[i]);
+constraint resta == sum(i in POS)(S[i]*subsets[i]) - sum(i in POS)((1-S[i])*subsets[i]);
 constraint resta = sum(i in POS)(S[i]+subsets[i]);
 
 constraint resta >= 0; 
