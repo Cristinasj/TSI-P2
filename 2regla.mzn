@@ -1,5 +1,5 @@
 include "globals.mzn"; 
-int : N = 3; 
+int : N = 12; 
 array [1..N] of var int: marcas;
 
 constraint marcas[1] = 0; 
@@ -11,7 +11,9 @@ constraint forall(i in 2..N)(marcas[i] > 0);
 constraint all_different(marcas); 
 constraint forall(j in 0..N-3)(
   forall(i in 1..N-j-2)(
-    marcas[N-j] - marcas[N-j-1] != marcas[N-j] - marcas[N-j-i-1] 
+    forall(k in 0..N-j-2)(
+      marcas[N-j] - marcas[N-j-1] != marcas[N-j-k] - marcas[N-j-i-1] 
+    )
   )
 ); 
 
