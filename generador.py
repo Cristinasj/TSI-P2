@@ -11,14 +11,14 @@ def randomgraph(N, seed):
         adj[n2,n1]=1
     
     print("int: N =", N, ";")
-    print("array[1..N,1..N] of 0..1: adyacncia = [|", end='' )
+    print("array[1..N,1..N] of 0..1: adyacencia = [|", end='' )
     for i in range(N): 
         for j in range(N-1): 
             print(str(adj[i,j])+",", end='')
-        print(str(adj[i,N-1])+"/", end='')
+        print(str(adj[i,N-1])+"|", end='')
     print("];")
     print("")
 
-n = input("Nº de nodos")
-s = input("Semilla")
-randomgraph(n, s)
+n = input("Nº de nodos: ")
+s = input("Semilla: ")
+randomgraph(int(n), int(s))
