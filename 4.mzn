@@ -34,6 +34,7 @@ constraint forall(i in ntareas)(
   else if ( asignacion_tareas[j,i] == 1 /\ asignacion_tareas[4,i] == 1 /\ tiempos[i,j] >= 3 ) then
       tiempo_fin[i] == tiempo_inicio[i] + tiempos[i,j] - 3
   else true endif  endif
+  
   )  
 );
 
